@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ilampirai - Bridging noble & needy</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<link rel="icon" type="image/png" href="images/favicon1.png">
+	<link rel="stylesheet" href="css/main.css">	
+	<link href="http://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet" type="text/css">
+	<link href="http://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet" type="text/css">
+	<link href="css/prettyPhoto.css" rel="stylesheet" type="text/css">
+
+	<link href="css/icon.css" rel="stylesheet" type="text/css">
+	<script src='http://code.jquery.com/jquery-1.9.1.js'></script>
+	<script src="js/jquery.prettyPhoto.js" type="text/javascript"></script>
+	
+</head>
+<body>
+	<div id="header">	
+		<div id="navbar">
+			<div id="logo"></div> 
+			<ul>
+				<li class="home selected"><a href="#">Home</a></li>
+				<li class="about"><a href="#">About Us</a></li>
+				<li class="project"><a href="#" style="background-image:none;">Projects</a></li>
+				<li class="hspace"></li>
+				<li class="gallery"><a href="#">Gallery</a></li>
+				<li class="team"><a href="#">Team</a></li>
+				<li class="contact" style="background-image:none;"><a href="#">Contact Us</a></li>
+			</ul>
+			
+		</div>
+		
+	</div> 
+	<div id="main">
+		<div id="slider">
+			<div class="item">
+				<img src="images/1.jpg" id="slideshow"/>
+				<div id="desc">Lorel ipsum -1</div>
+			</div>
+
+		</div>
+
+		<div id="container">
+			<ul class="content">
+				<li>
+					<h2>Who are we</h2>
+					<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat</p>
+				</li>
+				<li>
+					<h2>What we do</h2>
+					<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat</p>
+				</li>
+				<li style="border:none;">
+					<h2>How to help</h2>
+					<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat</p>
+				</li>
+			</ul>
+		</div>
+	</div> 
+	
+	<div id="footer">
+		Copyrights © 2013 ilampirai.org. All rights reserved.
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		var images = ['images/1.jpg','images/2.jpg','images/1.jpg','images/2.jpg'];
+		var desc = ['Lorel ipsum -1','Lorel ipsum -2','Lorel ipsum -3','Lorel ipsum -4'];
+
+		$('.item').css("height",$(window).height());
+
+		setInterval(scrollImage, 6000);
+
+		function scrollImage(){
+			currentImageKey();
+			if(i<images.length-1)
+			{
+				changeImage(i+1);
+			}
+			else
+			{
+				changeImage(0);
+			}
+		}
+
+		function currentImageKey(){
+			i=jQuery.inArray($('#slideshow').attr('src'),images);
+			return i;
+		}
+		function changeImage(i){
+			$('#desc').animate({opacity:0,},400);
+			$('#slideshow').stop().animate({opacity:0,},400,function(){
+				$('#slideshow').attr('src', images[i]);
+				$('#slideshow').load(function(){
+					$('#slideshow').stop().animate({opacity:1,},2000,function(){
+						$('#desc').html(desc[i]).animate({opacity:1,},400);
+					});
+				});
+			});
+		}
+
+	});
+
+	$("#navbar li").click(function(){
+		$("#navbar li").removeClass("selected");
+		var requested = $(this).attr('class');
+		$(this).addClass("selected");
+
+		if(requested == "project")
+		{
+			getPosts(0);
+		}
+		else{
+			$.ajax({
+  				url: "server.php",
+  				type: "GET",
+  				data: { page : requested }
+			}).done(function( html ) {
+  				$( "#main" ).html( html );
+			});
+		}
+});
+	function getPosts(offst){
+			var nextPage = offst;
+			var html='';
+			var month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+			var url = "http://api.tumblr.com/v2/blog/yahoo.tumblr.com/posts?api_key=z85MlZeqU5upp7onUGeAMvHHfYwzRv9DJJqK57eV0yQqjmhD09&limit=5&callback=?&offset="+nextPage;
+			var postsPerPage=5;
+			$.getJSON(url, function(results){
+        		var posts= results.response.posts;
+        		var totalPosts = parseInt(results.response.total_posts);
+        		var pagination = '';
+        		for(i=0;i<posts.length;i++)
+        		{
+          		 	var dates = posts[i].date.split(" ");
+            		var dateSplit = dates[0].split("-");
+            		d = new Date(dateSplit[0] + " " + dateSplit[1] + ", " + dateSplit[2]);
+           			html = html + '<li><div class="timestamp"><div class="day">'+ d.getDate() +'</div><div class="month">'+ month[d.getMonth()]+'</div><div class="year">'+ d.getFullYear() + '</div></div><div class="title">'+ posts[i].title+
+           			'</div><div class="post">'+ posts[i].body + '</div></li>';
+        		}
+        		
+        		if( nextPage == 0){
+        			var pages = parseInt(totalPosts/postsPerPage);
+        			var lastPage = totalPosts%postsPerPage;
+        			if(lastPage!=0){pages++;}
+        				for(i=1;i<=pages;i++){
+        					var offset = (i-1)*5;
+        					if(i==1)
+        					{
+        						pagination = pagination + '<a href="#" class="first active" offset=' + offset + '>' + i + '</a>';
+        					}
+        					else if(i==pages)
+        					{
+        						pagination = pagination + '<a href="#" class="last" offset=' + offset + '>' + i + '</a>';	
+        					}
+        					else
+        					pagination = pagination + '<a href="#" class="" offset=' + offset + '>' + i + '</a>';
+        				}
+        			pagination = '<div id="pagination"><a href="#" class="prev" style="display:none;">prev</a>' + pagination + '<a href="#" class="next" offset="5">next</a></div>';
+        			js = '<script>$("#pagination a").click(function(){$("#pagination a").removeClass("active");var curOffset= parseInt($(this).attr("offset"));$(".prev").attr("offset",curOffset-5);$(".next").attr("offset",curOffset+5);$("#pagination a[offset=\'"+ curOffset + "\']").addClass("active");$(".prev").removeClass("active");$(".next").removeClass("active");if($(".active").attr("class").search("first")!=0){$(".prev").show();}if($(".active").attr("class").search("last")==0){$(".next").hide();}else{$(".next").show();};getPosts(curOffset);});</'+ 'script>';
+					html = '<ul id="posts">' + html + '</ul>' + pagination + js;
+					$("#main").html( html );
+        		}
+        		else{
+        			$("#posts").html(html);
+        		}
+        		
+        	});
+		}
+
+	/*var postsPerPage=5;
+	var month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var url = "http://api.tumblr.com/v2/blog/yahoo.tumblr.com/posts?api_key=z85MlZeqU5upp7onUGeAMvHHfYwzRv9DJJqK57eV0yQqjmhD09&limit=5&callback=?";
+    $.getJSON(url, function(results){
+        var posts=results.response.posts;
+        var html='';
+        for(i=0;i<posts.length;i++)
+        {
+           	var dates = posts[i].date.split(" ");
+            var dateSplit = dates[0].split("-");
+            d = new Date(dateSplit[0] + " " + dateSplit[1] + ", " + dateSplit[2]);
+            html = html + '<li><div class="timestamp"><div class="day">'+ d.getDate() +'</div><div class="month">'+ month[d.getMonth()]+'</div><div class="year">'+ d.getFullYear() + '</div></div><div class="title">'+ posts[i].title+'</div><div class="post">'+ posts[i].body + '</div></li>';
+        }
+        html = '<ul id="posts">' + html + '</ul>';
+
+
+
+        $("#main").html(html);
+    });*/
+	/*$.ajax({
+		url: "contact.php"
+	}).done(function( html ) {
+		$("#main").html(html);
+	});*/
+</script>
+
+</body>
+</html>
