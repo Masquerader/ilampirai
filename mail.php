@@ -1,11 +1,18 @@
 <?php
 //declare our variables
 
-$title= $_POST['title'];
-$name = $_POST['name'];
-$email = $_POST['email'];
-$message = nl2br($_POST['message']);
+$title= test_input($_POST['title']);
+$name = test_input($_POST['name']);
+$email = test_input($_POST['email']);
+$message = test_input(nl2br($_POST['message']));
 
+function test_input($data)
+{
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
 if(!$title){
 	//get todays date
 	$todayis = date("l, F j, Y, g:i a") ;
@@ -17,11 +24,8 @@ if(!$title){
 				'Content-type: text/html; charset=utf-8' . "\r\n" .
     			'X-Mailer: PHP/' . phpversion();
 	ini_set("SMTP","216.69.186.201");
-	//mail("ilampirai2010@gmail.com", $subject, $body, $headers);
-}
-else{
-$name = "spammer";
+	mail("ilampirai2010@gmail.com", $subject, $body, $headers);
 }
 ?>
 <!--Display a thankyou message in the callback -->
-<h5 style="font-family:Lato;font-weight:bold;">Nice to hear from you <b style="font-size:25px;"> <?php echo $name . $title ?></b>!</h5>
+<h5 style="font-family:Lato;font-weight:bold;">Nice to hear from you <b style="font-size:25px;"> <?php echo $name ?></b>!</h5>
