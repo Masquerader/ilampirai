@@ -468,3 +468,8 @@ input,textarea{
 #pagination .active{
 	padding: 10px;
 }
+.warning{
+	border-color:red;
+	box-shadow: 0 0;
+	-webkit-box-shadow:0 0;
+}

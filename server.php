@@ -34,6 +34,7 @@ $html = <<<html
 		<h3 style="margin-bottom:37px;">Send us a message</h3>
 		<form accept-charset="UTF-8" action="mail.php" method="post" id="contact-form"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="MsfHghRDWjOdi8SBxMDJvQWRWWX8UoZVXRcGD8TDkro="></div>
 			<div class="input">
+				<input id="message_title" name="title" size="30" title="Your Name" type="text" class="label_text" placeholder="Your Name" style="display:none;">
 				<input id="message_name" name="name" size="30" title="Your Name" type="text" class="label_text" placeholder="Your Name">
 				<input id="message_email" name="email" size="30" title="Your Email Address" type="text" class="label_text" placeholder="Your Email Address">
 				<textarea cols="40" id="message_message" name="message" rows="20" title="Your Message" class="label_text" placeholder="Your Message"></textarea>
@@ -46,26 +47,40 @@ $html = <<<html
 </div>
 html;
 echo $html . "<script>$('#contact-form').submit(function(e){
-	$('#loading').fadeIn('slow');
-	var postData = $(this).serializeArray();
-    var formURL = $(this).attr('action');
-    $.ajax(
-    {
-        url : formURL,
-        type: 'POST',
-        data : postData,
-        success:function(data, textStatus, jqXHR) 
-        {
-        	$('#loading').fadeOut('slow');
-            $('.submit').html(data).fadeIn('slow');
-        },
-        error: function(jqXHR, textStatus, errorThrown) 
-        {
-            //if fails      
-        }
-    });
-    e.preventDefault(); //STOP default action
-}); 
+	e.preventDefault();
+	var email = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+	$('.warning').removeClass('warning');
+	if(!$('#message_name').val()){
+		$('#message_name').addClass('warning');
+	} 
+	else if(!$('#message_email').val() || !$('#message_email').val().match(email)){
+		$('#message_email').addClass('warning');
+	}
+	else if(!$('#message_message').val()){
+		$('#message_message').addClass('warning');
+	}
+	else{
+		$('#loading').fadeIn('slow');
+		var postData = $(this).serializeArray();
+    	var formURL = $(this).attr('action');
+    	$.ajax(
+    	{
+        	url : formURL,
+        	type: 'POST',
+        	data : postData,
+        	success:function(data, textStatus, jqXHR) 
+        	{
+        		$('#loading').fadeOut('slow');
+            	$('.submit').html(data).fadeIn('slow');
+        	},
+        	error: function(jqXHR, textStatus, errorThrown) 
+        	{
+            	//if fails      
+        	}
+    	});
+	}
+});
 $('#ajaxform').submit();</script>"; 
 }
 if(strcmp($page,"team")==0)
