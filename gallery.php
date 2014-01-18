@@ -1,5 +1,5 @@
 <?php
-require_once('sdk/facebook.php');
+require_once('./sdk/facebook.php');
 $config = array();
 $config['appId'] = '189470877784753';
 $config['secret'] = 'fbaee6417267a200308408e70d7403ae';
