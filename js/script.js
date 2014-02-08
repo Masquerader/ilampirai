@@ -99,6 +99,8 @@
 	});
 
 	$(".about").click(function(){
+		$("#navbar li").removeClass("selected");
+		$(this).addClass("selected");
 		$("#loading").fadeIn('slow');
 		$.ajax({
   			url: "server.php",
@@ -111,6 +113,8 @@
 	});
 
 	$(".team").click(function(){
+		$("#navbar li").removeClass("selected");
+		$(this).addClass("selected");
 		$("#loading").fadeIn('slow');
 		$.ajax({
   			url: "server.php",
@@ -123,6 +127,8 @@
 	});
 
 	$(".contact").click(function(){
+		$("#navbar li").removeClass("selected");
+		$(this).addClass("selected");
 		$("#loading").fadeIn('slow');
 		$.ajax({
   			url: "server.php",
