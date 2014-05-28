@@ -45,8 +45,8 @@
     	FB.api({
      		method: 'fql.multiquery',
      		queries: {
-        		query1:"select name,aid,photo_count, created from album where owner=\'125899704117417\' and name!= \'Cover Photos\' and name!= \'Timeline Photos\' and name!=\'Profile Pictures\'",
-        		query2:"select src_big from photo where pid in ( select cover_pid,name from album where owner=\'125899704117417\' and name!= \'Cover Photos\' and name!= \'Timeline Photos\' and name!=\'Profile Pictures\')"
+        		query1:"select name,aid,photo_count, created from album where owner=\'125899704117417\' and name!= \'Cover Photos\' and name!= \'Timeline Photos\' and name!=\'Profile Pictures\' and photo_count!=0",
+        		query2:"select src_big from photo where pid in ( select cover_pid,name from album where owner=\'125899704117417\' and name!= \'Cover Photos\' and name!= \'Timeline Photos\' and name!=\'Profile Pictures\' and photo_count!=0)"
      		}
     	}, function(response) {
 	  			var album_details = response[0]['fql_result_set'];
