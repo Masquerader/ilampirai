@@ -1,7 +1,7 @@
 ilampirai
 =========
 
-Source code of ilampirai
+Source code of ilampirai. Beta site here - http://ilampirai.org/cgi/beta/index.html
 
 
 About Ilampirai
